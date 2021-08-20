@@ -1,0 +1,16 @@
+
+.socket.output{
+    position: relative;
+    background-color: #49c3ac;
+    border: 1px solid black;
+    left: 6px;
+    border-radius: 4px;
+}
+
+.socket.input {
+    position: relative;
+    background-color: #49c3ac;
+    border: 1px solid black;
+    left: -6px;
+    border-radius: 4px;
+}
