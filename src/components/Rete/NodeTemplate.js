@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import {MuiThemeProvider} from "@material-ui/core";
-import theme from "../../../../static/js/MUI_theme";
+import theme from "../../MUI_theme";
 import SocketTemplate from "./SocketTemplate";
 
 export default class NodeTemplate extends Node {
@@ -28,7 +28,7 @@ export default class NodeTemplate extends Node {
 
                     <CardContent style={{padding: '0 8px'}}>
                         {outputs.map(output => (
-                            <Grid container key={output.key} alignItems="baseline" justify="flex-end" spacing={0}>
+                            <Grid container key={output.key} alignItems="baseline" justifyContent="flex-end" spacing={0}>
                                 <Grid item>
                                     <Typography variant="body1" color="textPrimary">
                                         {output.name}
@@ -58,7 +58,7 @@ export default class NodeTemplate extends Node {
 
                         {inputs.map(input => (
                             <Grid container className="input" key={input.key}
-                                  alignItems="center" justify="flex-start"
+                                  alignItems="center" justifyContent="flex-start"
                                   spacing={0} style={{height: '60px'}}>
                                 <Grid item>
                                     <SocketTemplate

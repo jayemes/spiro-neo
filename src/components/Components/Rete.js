@@ -1,5 +1,5 @@
 // IMPORT RETE AND PLUGINS
-import Rete from 'spiro-neo/src/components/Components/Rete'
+
 import ConnectionPlugin from 'rete-connection-plugin'
 import ReactRenderPlugin from 'rete-react-render-plugin'
 import ContextMenuPlugin from 'rete-context-menu-plugin';
@@ -21,6 +21,7 @@ import CustomComponent from "../NodeComponents/CustomFunctionComponent";
 import OutputComponent from "../NodeComponents/OutputComponent";
 import TransformComponent from "../NodeComponents/TransformComponent";
 import ColorPickerComponent from "../NodeComponents/ColorPickerComponent";
+import Rete from "rete";
 
 export async function createEditor(container, outputHandler, utils) {
 

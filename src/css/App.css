@@ -16,14 +16,14 @@
 }
 
 #nodes-container {
-    background: linear-gradient(90deg, #000000bb, #000000bb), url(../Res/moroccan-flower.png);
+    background: linear-gradient(90deg, #000000bb, #000000bb);
 
     width: 500px;
     height: calc(100vh - 550px);
 }
 
 #canvas-container {
-    background: linear-gradient(0deg, #00000099, #00000099), url(../Res/moroccan-flower-dark.png);
+    background: linear-gradient(0deg, #00000099, #00000099);
     display: flex;
     justify-content: center;
     align-items: center;

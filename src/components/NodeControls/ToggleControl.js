@@ -1,6 +1,6 @@
 import Rete from "rete";
 import {ThemeProvider} from "@material-ui/core/styles";
-import theme from "../../../../static/js/MUI_theme";
+import theme from "../../MUI_theme";
 import React from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";

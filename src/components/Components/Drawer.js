@@ -5,8 +5,8 @@ import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Typography from '@material-ui/core/Typography';
 import PresetCard from './PresetCard'
-import theme from "../../../../static/js/MUI_theme";
 import Box from "@material-ui/core/Box";
+import theme from "../../MUI_theme";
 
 const useStyles = makeStyles({
     list: {

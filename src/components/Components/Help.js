@@ -1,5 +1,5 @@
 import React from 'react'
-import '../Style/Help.css'
+import '../../css/Help.css'
 
 class Help extends React.Component {
 
@@ -28,7 +28,6 @@ class Help extends React.Component {
                     <li>React.js</li>
                     <li>Firestore</li>
                 </ul>
-                <p>I'm looking for work as Full Stack or Android developer, if interested hit me up at jmscasso (gmail) </p>
 
             </div>
         )

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import React from 'react'
-import '../Style/ThreeDElement.css'
+import '../../css/ThreeDElement.css'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 
 class ThreeDElement extends React.Component {

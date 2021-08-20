@@ -2,11 +2,11 @@ import React from 'react'
 
 import {createEditor} from './Rete'
 import Button from "@material-ui/core/Button";
-import {firestore} from "firebase"
 import AlertDialog from "./AlertDialog";
 import LoadDialog from "./LoadDialog";
 import Snackbar from "@material-ui/core/Snackbar";
 import AreaPlugin from "rete-area-plugin";
+import firebase from "firebase";
 
 class Nodes extends React.Component {
 
@@ -32,7 +32,7 @@ class Nodes extends React.Component {
     }
 
     saveNodes() {
-        const db = firestore()
+        const db = firebase.firestore()
 
         this.editor.then(function (it) {
 
@@ -73,7 +73,7 @@ class Nodes extends React.Component {
 
     loadNodes(code) {
 
-        const db = firestore()
+        const db = firebase.firestore()
 
         this.props.handleSpinner(true)()
         db.collection('user_presets').doc(code).get()

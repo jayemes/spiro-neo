@@ -1,16 +1,15 @@
 import React from 'react';
-import '../Style/App.css';
+import '../../css/App.css';
 import Nodes from './Nodes'
 import ThreeDElement from './ThreeDElement'
 import Help from './Help'
 import Drawer from './Drawer'
-import icon from '../Res/help-24px.svg'
-import presets from '../../../../static/js/presets'
 
 import {ThemeProvider} from '@material-ui/core/styles';
-import theme from '../../../../static/js/MUI_theme'
 import {Button} from '@material-ui/core'
 import Spinner from "./Spinner";
+import {presets} from "../../presets";
+import theme from "../../MUI_theme";
 
 class App extends React.Component {
     constructor(props) {
@@ -104,7 +103,7 @@ class App extends React.Component {
 
                         <Button variant="contained" color="secondary" onClick={this.toggleHelp}> Help
                             <div className="help-icon">
-                                <img src={icon} alt=""/>
+                                {/*<img src={} alt=""/>*/}?
                             </div>
                         </Button>
                         <br/>

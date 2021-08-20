@@ -1,7 +1,7 @@
 import Rete from "rete";
 import TextField from "@material-ui/core/TextField";
 import React from "react";
-import theme from "../../../../static/js/MUI_theme";
+import theme from "../../MUI_theme";
 import {ThemeProvider} from "@material-ui/core/styles";
 
 class FunctionControl extends Rete.Control {

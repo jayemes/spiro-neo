@@ -1,6 +1,6 @@
 import Rete from "rete";
 import {ThemeProvider} from "@material-ui/core/styles";
-import theme from "../../../../static/js/MUI_theme";
+import theme from "../../MUI_theme";
 import TextField from "@material-ui/core/TextField";
 import React from "react";
 

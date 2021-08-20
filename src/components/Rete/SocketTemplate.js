@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Style/Socket.css'
+import '../../css/Socket.css'
 
 function  kebab(str) {
     const replace = s => s.toLowerCase().replace(/ /g, '-');
