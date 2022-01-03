@@ -1,10 +1,9 @@
 // IMPORT RETE AND PLUGINS
 
-import ConnectionPlugin from 'rete-connection-plugin'
-import ReactRenderPlugin from 'rete-react-render-plugin'
-import ContextMenuPlugin from 'rete-context-menu-plugin';
-import AreaPlugin from 'rete-area-plugin'
-
+import ConnectionPlugin from "rete-connection-plugin";
+import ReactRenderPlugin from "rete-react-render-plugin";
+import ContextMenuPlugin from "rete-context-menu-plugin";
+import AreaPlugin from "rete-area-plugin";
 
 // IMPORT COMPONENTS
 import SphereComponent from "../NodeComponents/SphereComponent";
@@ -13,8 +12,7 @@ import NumComponent from "../NodeComponents/NumComponent";
 import AddComponent from "../NodeComponents/AddComponent";
 import AnimateComponent from "../NodeComponents/AnimateComponent";
 import AddFunctionsComponent from "../NodeComponents/AddFunctionsComponent";
-import MultiplyFunctionsComponent
-  from "../NodeComponents/MultiplyFunctionsComponent";
+import MultiplyFunctionsComponent from "../NodeComponents/MultiplyFunctionsComponent";
 import SolidColorComponent from "../NodeComponents/SolidColorComponent";
 import IndexColorComponent from "../NodeComponents/IndexColorComponent";
 import MathComponent from "../NodeComponents/MathComponent";
@@ -26,7 +24,6 @@ import Rete from "rete";
 import AudioComponent from "../NodeComponents/AudioComponent";
 
 export async function createEditor(container, outputHandler, utils) {
-
   const components = [
     new NumComponent(),
     new AddComponent(),
@@ -43,12 +40,12 @@ export async function createEditor(container, outputHandler, utils) {
     new TransformComponent(),
     new ColorPickerComponent(),
     new AudioComponent(),
-  ]
+  ];
 
   let editor = new Rete.NodeEditor("Spiro@0.1.0", container);
   editor.use(ConnectionPlugin);
   editor.use(ReactRenderPlugin);
-  editor.use(AreaPlugin)
+  editor.use(AreaPlugin);
 
   editor.use(ContextMenuPlugin, {
     searchBar: false,
@@ -57,13 +54,13 @@ export async function createEditor(container, outputHandler, utils) {
 
   let engine = new Rete.Engine("Spiro@0.1.0");
 
-  components.forEach(c => {
+  components.forEach((c) => {
     editor.register(c);
     engine.register(c);
   });
 
-  engine.on('error', ({message, data}) => {
-    console.log('Engine Error: ' + message);
+  engine.on("error", ({ message, data }) => {
+    console.log("Engine Error: " + message);
   });
 
   editor.on(
@@ -74,20 +71,28 @@ export async function createEditor(container, outputHandler, utils) {
     }
   );
 
-  editor.on("noderemove", node => {
+  editor.on("noderemove", (node) => {
     if (node.name === "Animate") {
-      clearInterval(node.data.intervalId)
+      clearInterval(node.data.intervalId);
     } else if (node.name === "Output") {
-      delete window.outputs[node.data.outputId]
-      outputHandler(null, null, null, null, null, null, node.data.outputId, 'delete')
+      delete window.outputs[node.data.outputId];
+      outputHandler(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        node.data.outputId,
+        "delete"
+      );
     }
-  })
+  });
 
   editor.trigger("process");
   editor.view.resize();
 
-
   editor.engine = engine;
 
-  return editor
+  return editor;
 }

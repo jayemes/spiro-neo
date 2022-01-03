@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-import {createEditor} from './Rete'
+import { createEditor } from "./Rete";
 import Button from "@material-ui/core/Button";
 import AlertDialog from "./AlertDialog";
 import LoadDialog from "./LoadDialog";
@@ -9,183 +9,206 @@ import AreaPlugin from "rete-area-plugin";
 import firebase from "firebase";
 
 class Nodes extends React.Component {
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
 
-    constructor(props) {
-        super(props)
-        this.myRef = React.createRef();
+    this.saveNodes = this.saveNodes.bind(this);
+    this.loadNodes = this.loadNodes.bind(this);
+    this.clearNodes = this.clearNodes.bind(this);
+    this.getPoints = this.getPoints.bind(this);
+    this.handleLoadDialog = this.handleLoadDialog.bind(this);
+    this.handleAlertDialog = this.handleAlertDialog.bind(this);
+    this.handleSnackbar = this.handleSnackbar.bind(this);
 
-        this.saveNodes = this.saveNodes.bind(this)
-        this.loadNodes = this.loadNodes.bind(this)
-        this.clearNodes = this.clearNodes.bind(this)
-        this.getPoints = this.getPoints.bind(this)
-        this.handleLoadDialog = this.handleLoadDialog.bind(this)
-        this.handleAlertDialog = this.handleAlertDialog.bind(this)
-        this.handleSnackbar = this.handleSnackbar.bind(this)
+    this.state = {
+      alertDialogOpen: false,
+      sketchCode: null,
+      loadDialogOpen: false,
+      codeToLoad: null,
+      snackbarOpen: false,
+    };
+  }
 
-        this.state = {
-            alertDialogOpen: false,
-            sketchCode: null,
-            loadDialogOpen: false,
-            codeToLoad: null,
-            snackbarOpen: false
-        }
-    }
+  saveNodes() {
+    const db = firebase.firestore();
 
-    saveNodes() {
-        const db = firebase.firestore()
+    this.editor.then(
+      function (it) {
+        const doc = it.toJSON();
+        doc.isPreset = false;
 
-        this.editor.then(function (it) {
+        // console.log(doc)
+        const _this = this;
 
-            const doc = it.toJSON()
-            doc.isPreset = false
+        this.props.handleSpinner(true)();
 
-            // console.log(doc)
-            const _this = this
+        db.collection("user_presets")
+          .add(doc)
+          .then(function (docRef) {
+            _this.setState({ sketchCode: docRef.id });
+            window.history.replaceState(
+              null,
+              "Your Saved Sketch",
+              "/" + docRef.id
+            );
+          })
+          .catch((error) => {
+            console.error("Error adding document: ", error);
+            _this.setState({ sketchCode: -1 });
+          })
+          .finally(function () {
+            _this.handleAlertDialog();
+            _this.props.handleSpinner(false)();
+          });
+      }.bind(this)
+    );
+  }
 
-            this.props.handleSpinner(true)()
+  clearNodes() {
+    this.editor.then((editor) => {
+      editor.clear();
+      this.props.clearOutputs();
+    });
+  }
 
-            db.collection('user_presets').add(doc)
-                .then(function (docRef) {
-                    _this.setState({sketchCode: docRef.id});
-                    window.history.replaceState(null, "Your Saved Sketch", "/" + docRef.id)
-                })
-                .catch((error) => {
-                    console.error("Error adding document: ", error);
-                    _this.setState({sketchCode: -1});
-                })
-                .finally(function () {
-                    _this.handleAlertDialog()
-                    _this.props.handleSpinner(false)()
-                })
-        }.bind(this))
+  loadNodes(code) {
+    const db = firebase.firestore();
 
-
-    }
-
-    clearNodes() {
-        this.editor.then(
-            editor => {
-                editor.clear()
-                this.props.clearOutputs()
-            }
-        )
-    }
-
-    loadNodes(code) {
-
-        const db = firebase.firestore()
-
-        this.props.handleSpinner(true)()
-        db.collection('user_presets').doc(code).get()
-            .then(doc => {
-                if (doc.exists) {
-                    this.editor.then(
-                        editor => {
-                            editor.fromJSON(doc.data()).then(_ => {
-                                window.history.replaceState(null, "Your Sketch", "/" + code)
-                                console.log('Success loading')
-                                this.props.clearOutputs()
-                                AreaPlugin.zoomAt(editor, editor.nodes);
-                            })
-                        }
-                    ).catch(e => console.log(e))
-                } else {
-                    this.setState({snackbarOpen: true})
-                }
+    this.props.handleSpinner(true)();
+    db.collection("user_presets")
+      .doc(code)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          this.editor
+            .then((editor) => {
+              editor.fromJSON(doc.data()).then((_) => {
+                window.history.replaceState(null, "Your Sketch", "/" + code);
+                console.log("Success loading");
+                this.props.clearOutputs();
+                AreaPlugin.zoomAt(editor, editor.nodes);
+              });
             })
-            .finally(() => {
-                    this.setState({loadDialogOpen: false})
-                    this.props.handleSpinner(false)()
-
-                }
-            )
-
-    }
-
-    getPoints() {
-        let points = window.points
-        let j = document.createElement("a")
-        j.id = "download"
-        j.download = "stack_"+Date.now()+".json"
-        j.href = URL.createObjectURL(new Blob([JSON.stringify(points, null, 2)]))
-        j.click()
-    }
-
-
-    handleLoadDialog() {
-        this.setState((prev) => ({loadDialogOpen: !prev.loadDialogOpen}))
-    }
-
-    handleAlertDialog() {
-        this.setState((prev) => ({alertDialogOpen: !prev.alertDialogOpen}))
-    }
-
-    handleSnackbar(event, reason) {
-        if (reason === 'clickaway') {
-            return;
-        }
-        this.setState({snackbarOpen: false})
-    }
-
-    componentDidUpdate(prevProps, _, __) {
-
-        if (prevProps.code === this.props.code) {
-            // console.log('No change in nodes')
+            .catch((e) => console.log(e));
         } else {
-            console.log('Change in nodes, loading new preset...')
-            this.loadNodes(this.props.code)
-
-            // this.myRef.current.innerHTML = ""
-
+          this.setState({ snackbarOpen: true });
         }
+      })
+      .finally(() => {
+        this.setState({ loadDialogOpen: false });
+        this.props.handleSpinner(false)();
+      });
+  }
+
+  getPoints() {
+    let points = window.points;
+    let j = document.createElement("a");
+    j.id = "download";
+    j.download = "stack_" + Date.now() + ".json";
+    j.href = URL.createObjectURL(new Blob([JSON.stringify(points, null, 2)]));
+    j.click();
+  }
+
+  handleLoadDialog() {
+    this.setState((prev) => ({ loadDialogOpen: !prev.loadDialogOpen }));
+  }
+
+  handleAlertDialog() {
+    this.setState((prev) => ({ alertDialogOpen: !prev.alertDialogOpen }));
+  }
+
+  handleSnackbar(event, reason) {
+    if (reason === "clickaway") {
+      return;
     }
+    this.setState({ snackbarOpen: false });
+  }
 
-    componentDidMount() {
-        this.editor = createEditor(this.myRef.current, this.props.handleOutput)
+  componentDidUpdate(prevProps, _, __) {
+    if (prevProps.code === this.props.code) {
+      // console.log('No change in nodes')
+    } else {
+      console.log("Change in nodes, loading new preset...");
+      this.loadNodes(this.props.code);
 
-        this.editor.then(() => {
-            if (this.props.code) this.loadNodes(this.props.code)
-        })
+      // this.myRef.current.innerHTML = ""
     }
+  }
 
-    render() {
-        return (
-            <React.Fragment>
+  componentDidMount() {
+    this.editor = createEditor(this.myRef.current, this.props.handleOutput);
 
-                <div id="nodes" ref={this.myRef}>
-                    <Button style={{margin: '5px',}} variant='contained' color="primary"
-                            onClick={this.saveNodes}>Save</Button>
+    this.editor.then(() => {
+      if (this.props.code) this.loadNodes(this.props.code);
+    });
+  }
 
-                    <Button style={{margin: '5px',}} variant='contained' color="primary"
-                            onClick={this.handleLoadDialog}>Load</Button>
+  render() {
+    return (
+      <React.Fragment>
+        <div id="nodes" ref={this.myRef}>
+          <Button
+            style={{ margin: "5px" }}
+            variant="contained"
+            color="primary"
+            onClick={this.saveNodes}
+          >
+            Save
+          </Button>
 
-                    <Button style={{margin: '5px',}} variant='contained' color="secondary"
-                            onClick={this.clearNodes}>Clear</Button>
+          <Button
+            style={{ margin: "5px" }}
+            variant="contained"
+            color="primary"
+            onClick={this.handleLoadDialog}
+          >
+            Load
+          </Button>
 
-                    <Button style={{margin: '5px',}} variant='contained' color="primary"
-                            onClick={this.getPoints}>Get Points (json)</Button>
+          <Button
+            style={{ margin: "5px" }}
+            variant="contained"
+            color="secondary"
+            onClick={this.clearNodes}
+          >
+            Clear
+          </Button>
 
-                </div>
-                <AlertDialog open={this.state.alertDialogOpen}
-                             code={this.state.sketchCode}
-                             handler={this.handleAlertDialog}/>
+          <Button
+            style={{ margin: "5px" }}
+            variant="contained"
+            color="primary"
+            onClick={this.getPoints}
+          >
+            Get Points (json)
+          </Button>
+        </div>
+        <AlertDialog
+          open={this.state.alertDialogOpen}
+          code={this.state.sketchCode}
+          handler={this.handleAlertDialog}
+        />
 
-                <LoadDialog open={this.state.loadDialogOpen}
-                            handler={this.handleLoadDialog}
-                            loadCB={this.loadNodes}/>
+        <LoadDialog
+          open={this.state.loadDialogOpen}
+          handler={this.handleLoadDialog}
+          loadCB={this.loadNodes}
+        />
 
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                    open={this.state.snackbarOpen}
-                    autoHideDuration={3000}
-                    onClose={this.handleSnackbar}
-                    message="The code entered doesn't correspond to a saved configuration"/>
-            </React.Fragment>
-        )
-    }
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={3000}
+          onClose={this.handleSnackbar}
+          message="The code entered doesn't correspond to a saved configuration"
+        />
+      </React.Fragment>
+    );
+  }
 }
 
-export default Nodes
+export default Nodes;

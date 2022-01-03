@@ -1,24 +1,23 @@
 .help-container {
-    font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", sans-serif;
-    background-color: white;
-    position: fixed;
-    top: 50vh;
-    left: 50vw;
-    margin-left: -40vw;
-    margin-top: -35vh;
-    width: 80vw;
-    min-width: 500px;
-    border-radius: 20px;
-    padding: 5%;
-    opacity: 1;
-
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+    "Ubuntu", sans-serif;
+  background-color: white;
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  margin-left: -40vw;
+  margin-top: -35vh;
+  width: 80vw;
+  min-width: 500px;
+  border-radius: 20px;
+  padding: 5%;
+  opacity: 1;
 }
 
-h3{
-    text-align: left;
+h3 {
+  text-align: left;
 }
 
 li {
-    text-align: left;
+  text-align: left;
 }
-

@@ -1,19 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
 
-
-import {Router} from '@reach/router'
+import { Router } from "@reach/router";
 import App from "./components/Components/App";
 import firebase from "firebase";
 
 ReactDOM.render(
   // <React.StrictMode>
   <Router>
-    <App path='*'/>
-  </ Router>
+    <App path="*" />
+  </Router>,
   // </React.StrictMode>
-  , document.getElementById('root')
+  document.getElementById("root")
 );
 
 firebase.initializeApp({
