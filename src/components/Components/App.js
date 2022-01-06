@@ -7,9 +7,9 @@ import Drawer from "./Drawer";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
-import Spinner from "./Spinner";
 import { presets } from "../../presets";
 import theme from "../../MUI_theme";
+import { Spinner } from "./Spinner";
 
 class App extends React.Component {
   constructor(props) {

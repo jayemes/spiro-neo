@@ -2,7 +2,7 @@ import React from "react";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     position: "fixed",
     background: "white",
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function () {
+export function Spinner() {
   const classes = useStyles();
 
   return (
