@@ -14,6 +14,7 @@ class PreviewControl extends Rete.Control {
           error={hasError}
           color="secondary"
           label={label}
+          style={{ width: 120 }}
           inputProps={{
             type: "text",
           }}

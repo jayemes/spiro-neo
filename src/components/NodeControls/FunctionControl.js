@@ -11,6 +11,7 @@ class FunctionControl extends Rete.Control {
         variant="outlined"
         size="small"
         color="secondary"
+        style={{ width: 250 }}
         label={label}
         inputProps={{
           type: "text",

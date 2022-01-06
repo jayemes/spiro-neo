@@ -20,6 +20,7 @@ class NumControl extends Rete.Control {
           error={hasError}
           color="secondary"
           label={label}
+          style={{ width: 120 }}
           inputProps={{
             type: "number",
             step: step,

@@ -7,11 +7,11 @@ import App from "./components/Components/App";
 import firebase from "firebase";
 
 ReactDOM.render(
-  // <React.StrictMode>
-  <Router>
-    <App path="*" />
-  </Router>,
-  // </React.StrictMode>
+  <React.StrictMode>
+    <Router>
+      <App path="*" />
+    </Router>
+  </React.StrictMode>,
   document.getElementById("root")
 );
 

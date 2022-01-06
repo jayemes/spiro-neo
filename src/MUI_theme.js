@@ -48,7 +48,7 @@ const theme = createTheme({
     //Esto esta atrás del Outlined Input
     MuiInputBase: {
       root: {
-        width: 120,
+        // width: 120,
       },
     },
     // Este es el fondo del input

@@ -2,8 +2,6 @@ import React from "react";
 import { Control, Node } from "rete-react-render-plugin";
 import CardHeader from "@material-ui/core/CardHeader";
 import Card from "@material-ui/core/Card";
-// import Avatar from "@material-ui/core/Avatar";
-// import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
@@ -21,8 +19,6 @@ export default class NodeTemplate extends Node {
         <Card style={{ minWidth: 200 }}>
           <CardHeader
             style={{ padding: "10px 10px 0px 10px" }}
-            // avatar={<Avatar> {node.name[0]}</Avatar>}
-            // action={<IconButton aria-label="settings">+</IconButton>}
             title={node.name}
           />
 

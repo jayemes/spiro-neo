@@ -18,10 +18,12 @@ class AddComponent extends Rete.Component {
     inp1.addControl(new NumControl(this.editor, "num1", node));
     inp2.addControl(new NumControl(this.editor, "num2", node));
 
+    this.preview = new PreviewControl(this.editor, "preview", node, true);
+
     return node
       .addInput(inp1)
       .addInput(inp2)
-      .addControl(new PreviewControl(this.editor, "preview", node, true))
+      .addControl(this.preview)
       .addOutput(out);
   }
 
@@ -30,10 +32,7 @@ class AddComponent extends Rete.Component {
     const n2 = inputs.num2.length ? inputs.num2[0] : node.data.num2;
     const sum = n1 + n2;
 
-    this.editor.nodes
-      .find((n) => n.id === node.id)
-      .controls.get("preview")
-      .setValue(sum);
+    this.preview.setValue(sum);
     outputs.num = sum;
   }
 }
