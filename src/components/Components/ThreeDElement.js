@@ -2,6 +2,7 @@ import * as THREE from "three";
 import React from "react";
 import "../../css/ThreeDElement.css";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import Disc from "../../assets/disc.png";
 
 class ThreeDElement extends React.Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class ThreeDElement extends React.Component {
     this.canvas = null;
     this.myScene = null;
     this.size = 500;
-
+    this.sprite = new THREE.TextureLoader().load(Disc);
     this.createCanvas = this.createCanvas.bind(this);
   }
 
@@ -21,6 +22,7 @@ class ThreeDElement extends React.Component {
     this.canvas.id = "3DC";
 
     let scene = new THREE.Scene();
+    // scene.background = new THREE.Color(0xffffff);
     let camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 
     camera.position.set(70, 70, 70);
@@ -41,15 +43,20 @@ class ThreeDElement extends React.Component {
 
       let canvasContainer = this.myRef.current;
 
-      let newSize =
-        Math.max(
-          600,
-          Math.min(
-            canvasContainer.clientHeight,
-            canvasContainer.clientWidth,
-            900
-          )
-        ) - 100;
+      let newSize;
+      if (canvasContainer !== null) {
+        newSize =
+          Math.max(
+            600,
+            Math.min(
+              canvasContainer?.clientHeight || 1000,
+              canvasContainer?.clientWidth || 1000,
+              900
+            )
+          ) - 100;
+      } else {
+        newSize = 900;
+      }
 
       if (newSize !== this.size) {
         renderer.domElement.width = newSize;
@@ -102,7 +109,13 @@ class ThreeDElement extends React.Component {
     } else {
       switch (style.type) {
         case "index":
-          object3D = this.createCubesGeometry(points, style);
+          object3D = this.createCubesGeometry(points);
+          break;
+        case "extrusion":
+          object3D = this.createSplinesGeometry(points, style);
+          break;
+        case "points":
+          object3D = this.createPointsGeometry(points, style);
           break;
         default:
           object3D = this.createLineGeometry(points, style);
@@ -137,7 +150,6 @@ class ThreeDElement extends React.Component {
     const lines = new THREE.Object3D();
     lines.name = "Lines";
 
-    // const material = this.createPositionalMaterial(points)
     const material = this.createMaterial(style, points);
 
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -169,9 +181,75 @@ class ThreeDElement extends React.Component {
     return cubes;
   }
 
+  createCircle(radius, segments) {
+    if (segments < 2) segments = 2;
+
+    return new Array(segments).fill(0).map((val, idx) => {
+      const a = ((2 * idx) / segments) * Math.PI;
+
+      return new THREE.Vector2(Math.cos(a) * radius, Math.sin(a) * radius);
+    });
+  }
+
+  createSplinesGeometry(points, style) {
+    const { radius = 10, segments = 20, steps, color } = style;
+
+    const spline = new THREE.CatmullRomCurve3(
+      points.map((point) => new THREE.Vector3(point.x, point.y, point.z))
+    );
+
+    spline.curveType = "catmullrom";
+
+    const profile = this.createCircle(radius, segments);
+
+    const extrudeSettings = {
+      steps: steps > 0 ? steps : points.length || 1,
+      bevelEnabled: false,
+      extrudePath: spline,
+    };
+
+    const shape = new THREE.Shape(profile);
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+    geometry.name = "Lines";
+
+    const material = new THREE.MeshStandardMaterial({
+      color: `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`,
+      metalness: 0.7,
+      roughness: 0.3,
+    });
+
+    return new THREE.Mesh(geometry, material);
+  }
+
+  createPointsGeometry(points, style) {
+    const vertices = points.flatMap((point) => [point.x, point.y, point.z]);
+
+    const { color, size } = style;
+
+    const sprite = this.sprite;
+
+    const geometry = new THREE.BufferGeometry();
+
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(vertices, 3)
+    );
+
+    const material = new THREE.PointsMaterial({
+      color: `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`,
+      map: size > 0 ? sprite : null,
+      size: size > 0 ? size : 1,
+      alphaTest: 0.5,
+      transparent: true,
+    });
+
+    return new THREE.Points(geometry, material);
+  }
+
   createPositionalMaterial(points) {
     if (points.length > 0) {
-      const c = 0.0001; // Quick fix to avoid formating the numbers
+      const c = 0.0001; // Quick fix to avoid formatting the numbers
 
       const xMax = Math.max(...points.map((it) => it.x)) + c;
       const xMin = Math.min(...points.map((it) => it.x)) + c;
@@ -215,6 +293,16 @@ class ThreeDElement extends React.Component {
     while (scene.children.length) {
       scene.remove(scene.children[0]);
     }
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+    const light = new THREE.PointLight(0xffffff, 10, 1000, 1);
+    light.position.set(50, 50, 50);
+    scene.add(light);
+
+    const light2 = new THREE.PointLight(0xffffff, 10, 1000, 1);
+    light2.position.set(-200, -200, -200);
+    scene.add(light2);
 
     let pointsObject = {};
 

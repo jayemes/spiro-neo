@@ -22,6 +22,8 @@ import TransformComponent from "../NodeComponents/TransformComponent";
 import ColorPickerComponent from "../NodeComponents/ColorPickerComponent";
 import Rete from "rete";
 import AudioComponent from "../NodeComponents/AudioComponent";
+import ExtrusionStyleComponent from "../NodeComponents/ExtrusionStyleComponent";
+import PointsStyleComponent from "../NodeComponents/PointsStyleComponent";
 
 export async function createEditor(container, outputHandler, utils) {
   const components = [
@@ -37,6 +39,8 @@ export async function createEditor(container, outputHandler, utils) {
     new AnimateComponent(),
     new SolidColorComponent(),
     new IndexColorComponent(),
+    new ExtrusionStyleComponent(),
+    new PointsStyleComponent(),
     new TransformComponent(),
     new ColorPickerComponent(),
     new AudioComponent(),
@@ -90,7 +94,7 @@ export async function createEditor(container, outputHandler, utils) {
   });
 
   editor.trigger("process");
-  editor.view.resize();
+  container.parentElement && editor.view.resize();
 
   editor.engine = engine;
 

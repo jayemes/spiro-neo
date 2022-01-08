@@ -23,7 +23,6 @@ class SolidColorComponent extends Rete.Component {
 
     outputs["style"] = {
       type: "solid",
-      // color: {type: 'RGB', r, g, b}
       color: { type: "RGB", r: pick.rgb.r, g: pick.rgb.g, b: pick.rgb.b, a: 1 },
     };
   }

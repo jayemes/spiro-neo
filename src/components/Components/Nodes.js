@@ -6,7 +6,13 @@ import AlertDialog from "./AlertDialog";
 import LoadDialog from "./LoadDialog";
 import Snackbar from "@material-ui/core/Snackbar";
 import AreaPlugin from "rete-area-plugin";
-import firebase from "firebase";
+import {
+  getFirestore,
+  collection,
+  getDoc,
+  doc,
+  addDoc,
+} from "firebase/firestore";
 
 class Nodes extends React.Component {
   constructor(props) {
@@ -31,7 +37,7 @@ class Nodes extends React.Component {
   }
 
   saveNodes() {
-    const db = firebase.firestore();
+    const db = getFirestore(window.firestoreApp);
 
     this.editor.then(
       function (it) {
@@ -43,8 +49,7 @@ class Nodes extends React.Component {
 
         this.props.handleSpinner(true)();
 
-        db.collection("user_presets")
-          .add(doc)
+        addDoc(collection(db, "user_presets"), doc)
           .then(function (docRef) {
             _this.setState({ sketchCode: docRef.id });
             window.history.replaceState(
@@ -73,12 +78,13 @@ class Nodes extends React.Component {
   }
 
   loadNodes(code) {
-    const db = firebase.firestore();
+    const db = getFirestore(window.firestoreApp);
 
     this.props.handleSpinner(true)();
-    db.collection("user_presets")
-      .doc(code)
-      .get()
+
+    const docRef = doc(db, "user_presets", code);
+
+    getDoc(docRef)
       .then((doc) => {
         if (doc.exists) {
           this.editor

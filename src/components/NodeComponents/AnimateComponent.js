@@ -33,11 +33,13 @@ class AnimateComponent extends Rete.Component {
     if (node.data.intervalId) clearInterval(node.data.intervalId);
     node.data.intervalId = setInterval(this.cb, this.TIMER_INTERVAL);
 
+    this.preview = new PreviewControl(this.editor, "preview", node, true);
+
     return node
       .addInput(inp1)
       .addInput(inp2)
       .addInput(inp3)
-      .addControl(new PreviewControl(this.editor, "preview", node, true))
+      .addControl(this.preview)
       .addControl(new ToggleControl(this.editor, "mirror", node, "Mirror"))
       .addOutput(out);
   }
@@ -68,10 +70,7 @@ class AnimateComponent extends Rete.Component {
 
     this.num = this.min + triProgress * (this.max - this.min);
 
-    this.editor.nodes
-      .find((n) => n.id === node.id)
-      .controls.get("preview")
-      .setValue(this.num);
+    this.preview.setValue(this.num);
 
     outputs["num"] = this.num;
   }

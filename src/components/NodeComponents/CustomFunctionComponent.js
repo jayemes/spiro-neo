@@ -53,8 +53,6 @@ export default class CustomComponent extends Rete.Component {
       (param) => (params[param] = inputs[param]?.[0] || node.data[param])
     );
 
-    console.log(params);
-
     controls.get("fx").setColor("black");
     controls.get("fy").setColor("black");
     controls.get("fz").setColor("black");
