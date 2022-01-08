@@ -110,9 +110,7 @@ class App extends React.Component {
               color="secondary"
               onClick={this.toggleHelp}
             >
-              {" "}
               Help
-              <div className="help-icon">{/*<img src={} alt=""/>*/}?</div>
             </Button>
             <br />
             <Drawer data={this.drawerData} />

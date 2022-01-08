@@ -3,6 +3,7 @@ import React from "react";
 import "../../css/ThreeDElement.css";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Disc from "../../assets/disc.png";
+import { Stats } from "../../utils/stats";
 
 class ThreeDElement extends React.Component {
   constructor(props) {
@@ -31,6 +32,19 @@ class ThreeDElement extends React.Component {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.maxAzimuthAngle = 3.14152;
     controls.minAzimuthAngle = -3.14152;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+    const light = new THREE.PointLight(0xffffff, 10, 1000, 1);
+    light.position.set(50, 50, 50);
+    scene.add(light);
+
+    const light2 = new THREE.PointLight(0xffffff, 10, 1000, 1);
+    light2.position.set(-200, -200, -200);
+    scene.add(light2);
+
+    const stats = new Stats();
+    document.querySelector("#stats").appendChild(stats.dom);
 
     this.updateScene(scene);
 
@@ -65,6 +79,7 @@ class ThreeDElement extends React.Component {
       }
 
       renderer.render(scene, camera);
+      stats.update();
     }.bind(this);
 
     animate();
@@ -91,8 +106,6 @@ class ThreeDElement extends React.Component {
 
       points.push(new THREE.Vector3(x, y, z));
     }
-
-    // console.log(points)
 
     return points;
   }
@@ -290,19 +303,7 @@ class ThreeDElement extends React.Component {
   }
 
   updateScene(scene) {
-    while (scene.children.length) {
-      scene.remove(scene.children[0]);
-    }
-
-    scene.add(new THREE.AmbientLight(0xffffff, 1));
-
-    const light = new THREE.PointLight(0xffffff, 10, 1000, 1);
-    light.position.set(50, 50, 50);
-    scene.add(light);
-
-    const light2 = new THREE.PointLight(0xffffff, 10, 1000, 1);
-    light2.position.set(-200, -200, -200);
-    scene.add(light2);
+    scene.children = scene.children.filter((it) => it.type.includes("Light"));
 
     let pointsObject = {};
 
@@ -321,7 +322,6 @@ class ThreeDElement extends React.Component {
   }
 
   componentDidMount() {
-    // console.log("Mount")
     this.myScene = this.createCanvas();
     this.myRef.current.appendChild(this.canvas);
   }

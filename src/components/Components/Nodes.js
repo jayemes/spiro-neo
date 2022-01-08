@@ -154,6 +154,7 @@ class Nodes extends React.Component {
     return (
       <React.Fragment>
         <div id="nodes" ref={this.myRef}>
+          <div id="stats" style={{ position: "absolute" }} />
           <Button
             style={{ margin: "5px" }}
             variant="contained"
