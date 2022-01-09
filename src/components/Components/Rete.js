@@ -24,8 +24,9 @@ import Rete from "rete";
 import AudioComponent from "../NodeComponents/AudioComponent";
 import ExtrusionStyleComponent from "../NodeComponents/ExtrusionStyleComponent";
 import PointsStyleComponent from "../NodeComponents/PointsStyleComponent";
+import { ShaderStyleComponent } from "../NodeComponents/ShaderStyleComponent";
 
-export async function createEditor(container, outputHandler, utils) {
+export async function createEditor(container, outputHandler) {
   const components = [
     new NumComponent(),
     new AddComponent(),
@@ -40,6 +41,7 @@ export async function createEditor(container, outputHandler, utils) {
     new SolidColorComponent(),
     new IndexColorComponent(),
     new ExtrusionStyleComponent(),
+    new ShaderStyleComponent(),
     new PointsStyleComponent(),
     new TransformComponent(),
     new ColorPickerComponent(),
@@ -63,7 +65,7 @@ export async function createEditor(container, outputHandler, utils) {
     engine.register(c);
   });
 
-  engine.on("error", ({ message, data }) => {
+  engine.on("error", ({ message }) => {
     console.log("Engine Error: " + message);
   });
 
@@ -77,6 +79,8 @@ export async function createEditor(container, outputHandler, utils) {
 
   editor.on("noderemove", (node) => {
     if (node.name === "Animate") {
+      clearInterval(node.data.intervalId);
+    } else if (node.name === "Audio") {
       clearInterval(node.data.intervalId);
     } else if (node.name === "Output") {
       delete window.outputs[node.data.outputId];

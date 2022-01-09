@@ -14,6 +14,7 @@ class ThreeDElement extends React.Component {
     this.size = 500;
     this.sprite = new THREE.TextureLoader().load(Disc);
     this.createCanvas = this.createCanvas.bind(this);
+    this.frame = 0;
   }
 
   createCanvas() {
@@ -52,6 +53,8 @@ class ThreeDElement extends React.Component {
 
     let animate = function () {
       requestAnimationFrame(animate);
+
+      this.frame = renderer?.info.render.frame || 0;
 
       controls.update();
 
@@ -130,6 +133,9 @@ class ThreeDElement extends React.Component {
         case "points":
           object3D = this.createPointsGeometry(points, style);
           break;
+        case "shader":
+          object3D = this.createLineGeometry(points, style);
+          break;
         default:
           object3D = this.createLineGeometry(points, style);
       }
@@ -163,7 +169,12 @@ class ThreeDElement extends React.Component {
     const lines = new THREE.Object3D();
     lines.name = "Lines";
 
-    const material = this.createMaterial(style, points);
+    let material;
+    if (style?.type === "shader") {
+      material = this.createShaderMaterial(points, style);
+    } else {
+      material = this.createMaterial(style, points);
+    }
 
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const line = new THREE.Line(geometry, material);
@@ -226,11 +237,17 @@ class ThreeDElement extends React.Component {
 
     geometry.name = "Lines";
 
-    const material = new THREE.MeshStandardMaterial({
-      color: `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`,
-      metalness: 0.7,
-      roughness: 0.3,
-    });
+    let material;
+
+    if (color) {
+      material = new THREE.MeshStandardMaterial({
+        color: `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`,
+        metalness: 0.7,
+        roughness: 0.3,
+      });
+    } else {
+      material = this.createPositionalMaterial(points);
+    }
 
     return new THREE.Mesh(geometry, material);
   }
@@ -283,6 +300,7 @@ class ThreeDElement extends React.Component {
                 `;
       const fShader = `
                 varying vec3 pos;
+                uniform float frame;
     
                 void main() {
                 gl_FragColor = vec4((0.2 + 0.8*(pos.x-(${xMin}))/((${xMax})-(${xMin}))),
@@ -295,11 +313,29 @@ class ThreeDElement extends React.Component {
       return new THREE.ShaderMaterial({
         vertexShader: vShader,
         fragmentShader: fShader,
-        uniforms: {},
+        uniforms: { frame: { value: this.frame } },
       });
     }
 
     return new THREE.LineBasicMaterial();
+  }
+
+  createShaderMaterial(points, style) {
+    const fShader = style.fragment;
+
+    const vShader = `
+                varying vec3 pos;
+    
+                void main() {
+                pos = position;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+                `;
+    return new THREE.ShaderMaterial({
+      vertexShader: vShader,
+      fragmentShader: fShader,
+      uniforms: { frame: { value: this.frame } },
+    });
   }
 
   updateScene(scene) {
@@ -326,8 +362,7 @@ class ThreeDElement extends React.Component {
     this.myRef.current.appendChild(this.canvas);
   }
 
-  componentDidUpdate() {
-    // console.log("Update")
+  componentDidUpdate(prevProps, prevState, snapshot) {
     this.updateScene(this.myScene);
   }
 

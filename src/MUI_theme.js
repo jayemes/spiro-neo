@@ -23,7 +23,7 @@ const theme = createTheme({
         textTransform: "uppercase",
         fontSize: "20px",
         fontWeight: "bold",
-        maxWidth: 200,
+        // maxWidth: 200,
       },
     },
 

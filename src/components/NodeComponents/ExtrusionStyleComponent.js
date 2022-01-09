@@ -38,9 +38,7 @@ class ExtrusionStyleComponent extends Rete.Component {
   worker(node, inputs, outputs) {
     const params = {};
 
-    const color = inputs["color"]?.[0] || {
-      rgb: { r: 100, g: 100, b: 150, a: 1 },
-    };
+    const color = inputs["color"]?.[0];
 
     this.inputsNames.forEach(
       (param) => (params[param] = inputs[param]?.[0] || node.data[param])
