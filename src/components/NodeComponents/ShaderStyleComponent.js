@@ -4,13 +4,15 @@ import NodeTemplate from "../Rete/NodeTemplate";
 import { ShaderControl } from "../NodeControls/ShaderControl";
 
 const defaultFragment = `
-varying vec3 pos;
+varying vec3 _position;
+varying vec3 _normal;
+varying vec2 _uv;
 uniform float frame;
     
 void main() {
-gl_FragColor = vec4((0.2 + 0.8*(pos.x)),
-      (0.2 + 0.8*(pos.y)),
-      (0.2 + 0.8*(pos.z)),
+gl_FragColor = vec4((0.2 + 0.8*(_position.x)),
+      (0.2 + 0.8*(_position.y)),
+      (0.2 + 0.8*(_position.z)),
       1.0).rgba;
       }
                 `;

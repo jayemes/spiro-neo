@@ -17,6 +17,7 @@ class ExtrusionStyleComponent extends Rete.Component {
     );
 
     const colorInput = new Rete.Input("color", "Color", colorSocket);
+    const styleInput = new Rete.Input("style", "Style", styleSocket);
 
     inputs[0].addControl(
       new NumControl(this.editor, "radius", node, false, 2, 0.1)
@@ -32,13 +33,14 @@ class ExtrusionStyleComponent extends Rete.Component {
 
     inputs.forEach((input) => node.addInput(input));
 
-    return node.addOutput(out1).addInput(colorInput);
+    return node.addOutput(out1).addInput(colorInput).addInput(styleInput);
   }
 
   worker(node, inputs, outputs) {
     const params = {};
 
     const color = inputs["color"]?.[0];
+    const style = inputs["style"]?.[0];
 
     this.inputsNames.forEach(
       (param) => (params[param] = inputs[param]?.[0] || node.data[param])
@@ -48,6 +50,7 @@ class ExtrusionStyleComponent extends Rete.Component {
       type: "extrusion",
       ...params,
       color,
+      styleInput: style,
     };
   }
 }

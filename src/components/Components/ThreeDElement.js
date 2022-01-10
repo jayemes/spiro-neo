@@ -216,7 +216,7 @@ class ThreeDElement extends React.Component {
   }
 
   createSplinesGeometry(points, style) {
-    const { radius = 10, segments = 20, steps, color } = style;
+    const { radius = 10, segments = 20, steps, color, styleInput } = style;
 
     const spline = new THREE.CatmullRomCurve3(
       points.map((point) => new THREE.Vector3(point.x, point.y, point.z))
@@ -239,7 +239,9 @@ class ThreeDElement extends React.Component {
 
     let material;
 
-    if (color) {
+    if (styleInput?.type === "shader") {
+      material = this.createShaderMaterial(points, styleInput);
+    } else if (color) {
       material = new THREE.MeshStandardMaterial({
         color: `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`,
         metalness: 0.7,
@@ -324,11 +326,15 @@ class ThreeDElement extends React.Component {
     const fShader = style.fragment;
 
     const vShader = `
-                varying vec3 pos;
+                varying vec3 _position;
+                varying vec3 _normal;
+                varying vec2 _uv;
     
                 void main() {
-                pos = position;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                _position = position;
+                _normal = normal;
+                _uv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(_position, 1.0);
                 }
                 `;
     return new THREE.ShaderMaterial({
